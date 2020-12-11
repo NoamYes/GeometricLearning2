@@ -99,9 +99,9 @@ fig3.suptitle('Colored topology for Path Graph')
 
 for idx, vec_idx in enumerate(eig_vecs_idx):
     ax = fig3.add_subplot(1,len(eig_vecs_idx),idx+1)
-    color = pn_eigVecs[vec_idx,:]
+    color = np.round(pn_eigVecs[:,vec_idx-1], decimals=4)
     nx.draw(pn_graph, pos=pn_positions, node_color=color, cmap=plt.cm.Blues, **options_pn)
-    ax.set_title('k = ' + str(vec_idx))
+    ax.set_title('k = ' + str(vec_idx-1))
 
 # plt.show()
 
@@ -115,14 +115,14 @@ fig4.suptitle('Colored topology for Ring Graph')
 
 for idx, vec_idx in enumerate(eig_vecs_idx):
     ax = fig4.add_subplot(1,len(eig_vecs_idx),idx+1)
-    color = rn_eigVecs[vec_idx,:]
-    # nx.draw_circular(rn_graph, node_color=color, cmap=plt.cm.Blues, **options_rn)
-    nx.draw(pn_graph, pos=pn_positions, node_color=color, cmap=plt.cm.Blues, **options_pn)
-    ax.set_title('k = ' + str(vec_idx))
+    color = np.round(rn_eigVecs[:,vec_idx-1], decimals=4)
+    nx.draw_circular(rn_graph, node_color=color, cmap=plt.cm.Blues, **options_rn)
+    # nx.draw(pn_graph, pos=pn_positions, node_color=color, cmap=plt.cm.Blues, **options_pn)
+    ax.set_title('k = ' + str(vec_idx-1))
 
 plt.show()
 
-
+# 
 
 
 
