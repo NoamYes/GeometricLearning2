@@ -5,8 +5,8 @@ import scipy.sparse as sparse
 from plot3dnetwork import plot_3d_network
 ## Product graph
 
-nx = 21
-ny = 7
+nx = 71
+ny = 31
 
 vx = np.arange(nx)
 vy = np.arange(ny)
@@ -18,8 +18,8 @@ R = 100
 def torus_coords_from_pair(prod_vertex):
     r = 30
     R = 100
-    nx = 21
-    ny = 7
+    nx = 71
+    ny = 31
     x = prod_vertex[0]
     y = prod_vertex[1]
     phi = 2*np.pi*x/nx
@@ -33,8 +33,6 @@ def torus_coords_from_pair(prod_vertex):
     y = r_coord*np.sin(phi)
     z = z_coord
     return np.array([x, y, z])
-
-# transorm to cartezian
 
 
 # Compute product graph nodes
@@ -67,7 +65,7 @@ degree_arr = np.zeros(nx*ny)
 g_deg_mat = sparse.lil_matrix(np.diag(np.array(g_adj_mat.sum(axis=0)).flatten()))
 
 
-# Compute Laplacian matrices 
+# Compute Laplacian matrix
 g_lap_mat = g_deg_mat - g_adj_mat
 
 # Compute eigenvalues and eigenvectors
