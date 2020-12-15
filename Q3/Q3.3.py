@@ -56,8 +56,9 @@ sorted_distances = np.sort(distance_mat, 1)
 threshold = np.min(sorted_distances[:,8])
 adj_mat = np.copy(distance_mat)
 adj_mat[adj_mat > threshold] = 0
-adj_mat = np.exp(-adj_mat/threshold)
-adj_mat[adj_mat == 1] = 0
+adj_mat[adj_mat != 0] = 1
+# adj_mat = np.exp(-adj_mat/threshold)
+# adj_mat[adj_mat == 1] = 0
 adj_mat = sparse.lil_matrix(adj_mat)
 
 # Compute degree matrix 
@@ -75,14 +76,11 @@ idx_pn = eigVals.argsort()[::1]
 eigVals = eigVals[idx_pn] # Rounds up to 9 digits?
 eigVecs = eigVecs[:,idx_pn]
 
-
-
-
 # Plot the sorted eigenvalues
 fig2 = plt.figure(1)
 plt.xlabel('Statistical order')
 plt.ylabel(r'$\lambda$')
-plt.title('Product graph computed eigenvalues')
+plt.title('Product graph computed eigenvalues (Sorted), with noise and permutation')
 
 plt.plot(np.arange(len(eigVals))+1,eigVals)
 plt.show()
