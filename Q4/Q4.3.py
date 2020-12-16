@@ -186,7 +186,7 @@ fig5.suptitle('Lazy Walk probability distribution for B' +str(n) +' graph')
 # Demonstration of the convergence rate D_n
 
 a = rand_vertex_D_n
-b = [0, n, D_n_size-1]
+b = [0, n, D_n_size-1, a]
 stable_dist = p_D_n_list[-1]
 d_a = D_n_deg_vec[a]
 w2 = D_n_WG_eigVals[1]
@@ -206,12 +206,50 @@ for i, b_vertex in enumerate(b):
     axs[i].plot(time_vec, bound_func, label= r'$\sqrt{\frac{d(b)}{d(a)}}w_2^t$')
     axs[i].set_yscale('log')
     axs[i].legend()
-    axs[i].set_title('Bound for vertex (b)=' +str(b_vertex))
+    if b_vertex == a:
+        axs[i].set_title('Bound for vertex b = a')
+    else:
+        axs[i].set_title('Bound for vertex (b)=' +str(b_vertex))
     axs[i].set_ylim([-0.05,1.05])
     axs[i].set_xlabel('Time')
     axs[i].set_ylabel('logscale Difference')
 
 fig6.suptitle('Upper bound convergence of stable probability, D' +str(n) +' graph')
+
+
+# Demonstration of the convergence rate B_n
+
+a = rand_vertex_B_n
+b = [0, n, B_n_size-1, a]
+stable_dist = p_B_n_list[-1]
+d_a = B_n_deg_vec[a]
+w2 = B_n_WG_eigVals[1]
+
+time_vec = np.arange(len(p_B_n_list))
+p_B_n_arr = np.array(p_B_n_list)
+
+fig7, axs = plt.subplots(1,len(b), figsize=(15, 6))
+axs = axs.ravel()
+
+for i, b_vertex in enumerate(b):
+
+    d_b = B_n_deg_vec[b_vertex]
+    diff_from_stable = abs(p_B_n_arr[:,b_vertex]- stable_dist[b_vertex])
+    bound_func = np.sqrt(d_b/d_a)*w2**time_vec
+    axs[i].plot(time_vec, diff_from_stable, label=r'$|p_t(b)-\pi(b)|$')
+    axs[i].plot(time_vec, bound_func, label= r'$\sqrt{\frac{d(b)}{d(a)}}w_2^t$')
+    axs[i].set_yscale('log')
+    axs[i].legend()
+    if b_vertex == a:
+        axs[i].set_title('Bound for vertex b = a')
+    else:
+        axs[i].set_title('Bound for vertex (b)=' +str(b_vertex))
+    axs[i].set_ylim([-0.05,1.05])
+    axs[i].set_xlabel('Time')
+    axs[i].set_ylabel('logscale Difference')
+
+fig7.suptitle('Upper bound convergence of stable probability, B' +str(n) +' graph')
+
 
 plt.show()
 
