@@ -187,7 +187,8 @@ fig5.suptitle('Lazy Walk probability distribution for B' +str(n) +' graph')
 
 a = rand_vertex_D_n
 b = [0, n, D_n_size-1, a]
-stable_dist = p_D_n_list[-1]
+# stable_dist = p_D_n_list[-1]
+stable_dist = D_n_deg_vec/np.sum(D_n_deg_vec)
 d_a = D_n_deg_vec[a]
 w2 = D_n_WG_eigVals[1]
 
@@ -210,7 +211,6 @@ for i, b_vertex in enumerate(b):
         axs[i].set_title('Bound for vertex b = a')
     else:
         axs[i].set_title('Bound for vertex (b)=' +str(b_vertex))
-    axs[i].set_ylim([-0.05,1.05])
     axs[i].set_xlabel('Time')
     axs[i].set_ylabel('logscale Difference')
 
@@ -220,8 +220,9 @@ fig6.suptitle('Upper bound convergence of stable probability, D' +str(n) +' grap
 # Demonstration of the convergence rate B_n
 
 a = rand_vertex_B_n
-b = [0, n, B_n_size-1, a]
-stable_dist = p_B_n_list[-1]
+b = [0, n, int(B_n_size/2), B_n_size-1, a]
+# stable_dist = p_B_n_list[-1]
+stable_dist = B_n_deg_vec/np.sum(B_n_deg_vec)
 d_a = B_n_deg_vec[a]
 w2 = B_n_WG_eigVals[1]
 
@@ -244,7 +245,6 @@ for i, b_vertex in enumerate(b):
         axs[i].set_title('Bound for vertex b = a')
     else:
         axs[i].set_title('Bound for vertex (b)=' +str(b_vertex))
-    axs[i].set_ylim([-0.05,1.05])
     axs[i].set_xlabel('Time')
     axs[i].set_ylabel('logscale Difference')
 
