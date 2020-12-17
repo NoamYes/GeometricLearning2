@@ -27,6 +27,8 @@ def AffinityMat(Z, kernel_method, epsilon, n_neighbor=None, normalized=False, **
         b = kwargs['b']
         c = kwargs['c']
         kernel_func = lambda x, y: (np.dot(x,y.T)*a+b)**c  # Polynomial kernel
+    elif kernel_method == 'Unit':
+        pass
     else:
         raise ValueError("Invalid Kernel Type")
 
@@ -38,6 +40,9 @@ def AffinityMat(Z, kernel_method, epsilon, n_neighbor=None, normalized=False, **
         # Make the adj_mat symetric 
         adj_mat = np.maximum(adj_mat.toarray(), adj_mat.toarray().T)
         # Calculate kernel function on neighbors only
+        if kernel_method == 'Unit':
+            return adj_mat
+
         res = np.where(adj_mat == 1)
         for pair in zip(res[0], res[1]):
             r, c = pair
