@@ -2,10 +2,15 @@ import numpy as np
 from scipy.spatial.distance import cdist
 from sklearn.neighbors import kneighbors_graph
 
-def AffinityMat(Z, kernel_method, epsilon, n_neighbor=None, **kwargs):
+def AffinityMat(Z, kernel_method, epsilon, n_neighbor=None, normalized=False, **kwargs):
     N = Z.shape[0]   
     m = Z.shape[1]
     affinity_mat = np.zeros((N,N))
+    if normalized == True:
+        # Center and Normalize data
+        Z_cent = Z - np.sum(Z,axis=0)/N
+        Z_norm = Z_cent / np.linalg.norm(Z_cent, axis=0)
+        Z = Z_norm
 
     if kernel_method == 'Gaussian' and n_neighbor == None:
         # variance = (1/(2*np.pi*epsilon)**(m/2))
