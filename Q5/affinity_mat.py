@@ -45,8 +45,8 @@ def AffinityMat(Z, kernel_method, epsilon, n_neighbor=None, normalized=False, **
 
         res = np.where(adj_mat == 1)
         for pair in zip(res[0], res[1]):
-            r, c = pair
-            affinity_mat[r,c] = kernel_func(Z[r], Z[c])
+            row, col = pair
+            affinity_mat[row,col] = kernel_func(Z[row], Z[col])
 
 
 
