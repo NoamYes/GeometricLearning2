@@ -2,7 +2,7 @@ import numpy as np
 
 from affinity_mat import AffinityMat
 
-def diffusion_map(Z, kernel_method, epsilon, n_neighbor, d, t=10, **kwargs):
+def diffusion_map(Z, kernel_method, epsilon, n_neighbor, d, t=100, **kwargs):
     N = Z.shape[0]   
     m = Z.shape[1]
     aff_mat = AffinityMat(Z, kernel_method=kernel_method, n_neighbor = n_neighbor, epsilon=epsilon, **kwargs)
@@ -36,7 +36,7 @@ def Local_Linear_Embedding(Z, n_neighbor, epsilon, d, t=10, **kwargs):
         X_i_tild = X_i_tild.T
         C_i = X_i_tild.T.dot(X_i_tild)
         if np.linalg.matrix_rank(C_i) < C_i.shape[0]:
-            C_i = C_i + np.average(C_i)*np.eye(C_i.shape[0])/1e3
+            C_i = C_i + np.average(C_i)*np.eye(C_i.shape[0])
         C_i_inv = np.linalg.inv(C_i)
         ones_neighbors = np.ones(len(neigh_indices))
         w_i = (ones_neighbors.dot(C_i_inv).dot(ones_neighbors))**(-1)*C_i_inv.dot(ones_neighbors.T)

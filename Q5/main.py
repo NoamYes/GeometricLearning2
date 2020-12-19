@@ -111,7 +111,7 @@ n_neighbor = 10
 # plt.show()
 
 
-##   Plot LLE with various n_neighbors
+##  Plot Torus LLE with various n_neighbors
 
 # neighbors_list = [3, 7, 10, 25, 100]
 
@@ -128,56 +128,82 @@ n_neighbor = 10
 # plt.show()
 
 
-##   Plot diffusion on digits_5 for various n_neigbors
+##   Plot Diffusion on digits for various n_class
 
-# digits = datasets.load_digits(n_class=5)
+classes = [3, 5, 7]
+for n_class in classes:
+    
+    # Load digits dataset
+    digits = datasets.load_digits(n_class=n_class)
+    digits_data = digits.data
+    digits_tags = digits.target_names[digits.target]
+    colormap = digits_tags
 
-# digits_data = digits.data
-# digits_tags = digits.target_names[digits.target]
-# colormap = digits_tags
-# neighbors_list = [4, 10, 25, 200]
 
-# fig7, axs = plt.subplots(1,len(neighbors_list), figsize=(15, 6))
-# axs = axs.ravel()
+    neighbors_list = [4, 10, 25, 200]
+    fig, axs = plt.subplots(1,len(neighbors_list), figsize=(15, 6))
+    axs = axs.ravel()
 
-# for i, n_neighbor in enumerate(neighbors_list):
+    for i, n_neighbor in enumerate(neighbors_list):
 
-#     digits_reduced_diffusion = diffusion_map(digits_data, n_neighbor=n_neighbor, kernel_method='Linear', epsilon=1, d=2)
+        digits_reduced_diffusion = diffusion_map(digits_data, n_neighbor=n_neighbor, kernel_method='Linear', epsilon=1, d=2)
+        scat = axs[i].scatter(digits_reduced_diffusion[:,0], digits_reduced_diffusion[:,1], c=digits_tags)
+        axs[i].set_title('n_neighbors=' + str(n_neighbor))
+        axs[i].legend(handles=scat.legend_elements()[0], labels=[str(v) for v in digits_tags])
 
-#     scat = axs[i].scatter(digits_reduced_diffusion[:,0], digits_reduced_diffusion[:,1], c=digits_tags)
-#     axs[i].set_title('n_neighbors=' + str(n_neighbor))
-#     axs[i].legend(handles=scat.legend_elements()[0], labels=[str(v) for v in digits_tags])
+    fig.suptitle('Digits Diffusion MAP for multiple n_neighbors, Linear kernel')
 
-# fig7.suptitle('Digits Diffusion MAP for multiple n_neighbors, Linear kernel')
-# plt.show()
+    #   Plot on figure8 for different kernels, n_neighbors = 10
 
-##   Plot on figure5 for different kernels, n_neighbors = 10
+    kernels_list = ['Linear', 'Gaussian', {'a': 1, 'b': 0, 'c': 0.5}, {'a': 1, 'b': 0, 'c': 2}, {'a': 1, 'b': 0, 'c': 4}]
+    n_neighbor = 10
+    colormap = digits_tags
 
-kernels_list = ['Linear', 'Gaussian', {'a': 1, 'b': 0, 'c': 0.5}, {'a': 1, 'b': 0, 'c': 2}, {'a': 1, 'b': 0, 'c': 4}]
-n_neighbor = 10
-digits = datasets.load_digits(n_class=5)
-digits_data = digits.data
-digits_tags = digits.target_names[digits.target]
-colormap = digits_tags
+    fig, axs = plt.subplots(1,len(kernels_list), figsize=(15, 6))
+    axs = axs.ravel()
+    kargs_string = ''
+    for i, kernel_method in enumerate(kernels_list):
+        kwargs = {}
+        if not type(kernel_method) == str:
+            kwargs =  kernel_method
+            kernel_method = 'Polynomial'
+            a, b, c = kwargs['a'], kwargs['b'], kwargs['c']
+            kargs_string = '  a =' + str(a) +' b=' +str(b) + ' c=' + str(c)
+        digits_reduced_diffusion = diffusion_map(digits_data, n_neighbor=n_neighbor, kernel_method=kernel_method, epsilon=1, d=2, **kwargs)
 
-fig8, axs = plt.subplots(1,len(kernels_list), figsize=(15, 6))
-axs = axs.ravel()
-kargs_string = ''
-for i, kernel_method in enumerate(kernels_list):
-    kwargs = {}
-    if not type(kernel_method) == str:
-        kwargs =  kernel_method
-        kernel_method = 'Polynomial'
-        a, b, c = kwargs['a'], kwargs['b'], kwargs['c']
-        kargs_string = '  a =' + str(a) +' b=' +str(b) + ' c=' + str(c)
-    digits_reduced_diffusion = diffusion_map(digits_data, n_neighbor=n_neighbor, kernel_method=kernel_method, epsilon=1, d=2, **kwargs)
+        scat = axs[i].scatter(digits_reduced_diffusion[:,0], digits_reduced_diffusion[:,1], c=colormap)
+        axs[i].legend(handles=scat.legend_elements()[0], labels=[str(v) for v in digits_tags])
+        axs[i].set_title(str(kernel_method) + kargs_string)
 
-    scat = axs[i].scatter(digits_reduced_diffusion[:,0], digits_reduced_diffusion[:,1], c=colormap)
-    axs[i].legend(handles=scat.legend_elements()[0], labels=[str(v) for v in digits_tags])
-    axs[i].set_title(str(kernel_method) + kargs_string)
+    title = 'Digits Diffusion MAP for multiple kernel methods, n_neighbors=' + str(n_neighbor) + '\n' + 'Polynomial model=' + r'$a(xx^T+b)^c$'
+    fig.suptitle(title)
+    plt.show()
 
-title = 'Digits Diffusion MAP for multiple kernel methods, n_neighbors=' + str(n_neighbor) + '\n' + 'Polynomial model=' + r'$a(xx^T+b)^c$'
-fig8.suptitle(title)
-plt.show()
+##   Plot LLE on digits for various n_class
+classes = [3, 5, 7]
+for n_class in classes:
+    
+    # Load digits dataset
+    digits = datasets.load_digits(n_class=n_class)
+    digits_data = digits.data
+    digits_tags = digits.target_names[digits.target]
+    colormap = digits_tags
 
+
+    neighbors_list = [4, 10, 25, 200]
+    fig, axs = plt.subplots(1,len(neighbors_list), figsize=(15, 6))
+    axs = axs.ravel()
+
+    for i, n_neighbor in enumerate(neighbors_list):
+
+        digits_reduced_LLE = Local_Linear_Embedding(digits_data, n_neighbor=n_neighbor, epsilon=1, d=2)
+        scat = axs[i].scatter(digits_reduced_LLE[:,0], digits_reduced_LLE[:,1], c=digits_tags)
+        axs[i].set_title('n_neighbors=' + str(n_neighbor))
+        axs[i].legend(handles=scat.legend_elements()[0], labels=[str(v) for v in digits_tags])
+
+
+    fig.suptitle('Digits LLE MAP for multiple n_neighbors')
+    plt.show()
+
+    
 print('ya')
