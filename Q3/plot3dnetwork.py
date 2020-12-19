@@ -2,8 +2,6 @@ import networkx as nx
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 import numpy as np
-import random
-import pickle
 
 
 def plot_3d_network(graph, angle, positions):
@@ -25,4 +23,3 @@ def plot_3d_network(graph, angle, positions):
                 ax.plot(x, y, z, c='black', alpha=0.9)
     ax.view_init(30, angle)
     plt.show()
-
