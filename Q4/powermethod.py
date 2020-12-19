@@ -14,7 +14,7 @@ def PowerMethod(B, epsilon):
         else:
             u_current = u_new
         u_steps.append(u_current) 
-        eig_steps.append(np.dot(u_current.T, ).dot(u_current))
+        eig_steps.append(np.dot(u_current.T, B).dot(u_current))
         B_u = np.dot(B, u_current)
         u_new = B_u/np.linalg.norm(B_u)
         step = step + 1 
@@ -35,5 +35,3 @@ def PowerMethod2(B, epsilon):
     u2 = u2/np.linalg.norm(u2)
 
     return u2, h2
-
-print('ya')

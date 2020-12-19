@@ -1,5 +1,6 @@
 import numpy as np
-import powermethod
+from . import powermethod
+
 
 
 B = np.random.rand(10, 10)
@@ -38,6 +39,6 @@ def verify_eigens(B):
 
 
 diff_h1, diff_h2, diff_u1, diff_u2 = verify_eigens(B)
-max_diff = test_power_method(matrices_num=100)
+max_diff = examine_power_method(matrices_num=100)
 
 print('ya')
