@@ -6,23 +6,23 @@ n = 201
 
 
 # Init graph vertices for both path and ring
-pn_nodes= np.arange(1,n+1)
-rn_nodes= np.arange(1,n+1) 
+pn_nodes = np.arange(1, n+1)
+rn_nodes = np.arange(1, n+1)
 
 # Init graph edges for both path and ring
-pn_edges = np.array([[v,v+1] for v in pn_nodes[:n-1]])
-rn_edges = np.array([[v,v+1] for v in rn_nodes[:n-1]])
-rn_edges = np.append(rn_edges, [[1,n]], axis=0)
+pn_edges = np.array([[v, v+1] for v in pn_nodes[:n-1]])
+rn_edges = np.array([[v, v+1] for v in rn_nodes[:n-1]])
+rn_edges = np.append(rn_edges, [[1, n]], axis=0)
 
 # Compute Adjacency matrices 
-pn_adj_mat = np.zeros((n,n))
-rn_adj_mat = np.zeros((n,n))
+pn_adj_mat = np.zeros((n, n))
+rn_adj_mat = np.zeros((n, n))
 for edge in pn_edges:
-    pn_adj_mat[edge[0]-1,edge[1]-1] = 1 
-    pn_adj_mat[edge[1]-1,edge[0]-1] = 1 
+    pn_adj_mat[edge[0]-1, edge[1]-1] = 1
+    pn_adj_mat[edge[1]-1, edge[0]-1] = 1
 for edge in rn_edges:
-    rn_adj_mat[edge[0]-1,edge[1]-1] = 1 
-    rn_adj_mat[edge[1]-1,edge[0]-1] = 1   
+    rn_adj_mat[edge[0]-1, edge[1]-1] = 1
+    rn_adj_mat[edge[1]-1, edge[0]-1] = 1
 
 # Compute degree matrices 
 pn_deg_mat = np.diag(np.sum(pn_adj_mat, axis=0))
@@ -33,17 +33,17 @@ pn_lap_mat = pn_deg_mat - pn_adj_mat
 rn_lap_mat = rn_deg_mat - rn_adj_mat
 
 # Compute eigenvalues and eigenvectors
-pn_eigVals, pn_eigVecs  = np.linalg.eig(pn_lap_mat)
+pn_eigVals, pn_eigVecs = np.linalg.eig(pn_lap_mat)
 rn_eigVals, rn_eigVecs = np.linalg.eig(rn_lap_mat)
 
 # Sort the eigen values with associated eigenvectors
 idx_pn = pn_eigVals.argsort()[::1] 
-pn_eigVals = pn_eigVals[idx_pn] # Rounds up to 9 digits?
-pn_eigVecs = pn_eigVecs[:,idx_pn]
+pn_eigVals = pn_eigVals[idx_pn]  # Rounds up to 9 digits?
+pn_eigVecs = pn_eigVecs[:, idx_pn]
 
 idx_rn = rn_eigVals.argsort()[::1] 
 rn_eigVals = rn_eigVals[idx_rn]
-rn_eigVecs = rn_eigVecs[:,idx_rn]
+rn_eigVecs = rn_eigVecs[:, idx_rn]
 
 # Plot the graph topology of Laplacians
 pn_graph = nx.Graph(list(pn_edges))
@@ -52,7 +52,7 @@ rn_graph = nx.Graph(list(rn_edges))
 options_pn = {
     'node_color': 'blue',
     'node_size': 3,
-    'width': 1,
+    'width': 0.5,
 }
 
 options_rn = {
@@ -61,7 +61,7 @@ options_rn = {
     'width': 1,
 }
 
-pn_positions = { node: [15*node,15*node] for node in pn_nodes }
+pn_positions = {node: [15*node, 15*node] for node in pn_nodes}
 fig1 = plt.figure(1)
 ax = fig1.add_subplot(121)
 nx.draw(pn_graph, pos=pn_positions, **options_pn)
@@ -87,13 +87,13 @@ plt.xlabel('Statistical order (i)')
 plt.ylabel(r'$\lambda(i)$')
 ax.set_title('Path graph analytic eigenvalues')
 eigenvals_analytic = np.sort(eigenvals_analytic.flatten())
-plt.plot(np.arange(len(eigenvals_analytic))+1,eigenvals_analytic)
-plt.show()
+plt.plot(np.arange(len(eigenvals_analytic))+1, eigenvals_analytic)
+# plt.show()
 
 fig3 = plt.figure(3)
 # Computed ring
 ax = fig3.add_subplot(121)
-plt.plot(np.arange(len(rn_eigVals))+1,rn_eigVals)
+plt.plot(np.arange(len(rn_eigVals))+1, rn_eigVals)
 plt.xlabel('Statistical order (i)')
 plt.ylabel(r'$\lambda(i)$')
 ax.set_title('Ring graph computed eigenvalues')
@@ -105,9 +105,9 @@ plt.xlabel('Statistical order (i)')
 plt.ylabel(r'$\lambda(i)$')
 ax.set_title('Ring graph analytic eigenvalues')
 eigenvals_analytic = np.sort(eigenvals_analytic.flatten())
-plt.plot(np.arange(len(eigenvals_analytic))+1,eigenvals_analytic)
+plt.plot(np.arange(len(eigenvals_analytic))+1, eigenvals_analytic)
 
-plt.show()
+# plt.show()
 
 # Plot graph topology colored by eigenvectors
 eig_vecs_idx = [1, 2, 5, 10]
@@ -121,8 +121,8 @@ options_pn = {
 fig3.suptitle('Colored topology for Path Graph')
 
 for idx, vec_idx in enumerate(eig_vecs_idx):
-    ax = fig3.add_subplot(1,len(eig_vecs_idx),idx+1)
-    color = np.round(pn_eigVecs[:,vec_idx-1], decimals=4)
+    ax = fig3.add_subplot(1, len(eig_vecs_idx),idx+1)
+    color = np.round(pn_eigVecs[:, vec_idx-1], decimals=4)
     nx.draw(pn_graph, pos=pn_positions, node_color=color, cmap=plt.cm.winter, **options_pn)
     ax.set_title('k = ' + str(vec_idx-1))
 
@@ -141,14 +141,12 @@ options_rn = {
 fig4.suptitle('Colored topology for Ring Graph')
 
 for idx, vec_idx in enumerate(eig_vecs_idx):
-    ax = fig4.add_subplot(1,len(eig_vecs_idx),idx+1)
-    color = np.round(rn_eigVecs[:,vec_idx-1], decimals=4)
+    ax = fig4.add_subplot(1, len(eig_vecs_idx), idx+1)
+    color = np.round(rn_eigVecs[:, vec_idx-1], decimals=4)
     nx.draw_circular(rn_graph, node_color=color, cmap=plt.cm.winter, **options_rn)
     ax.set_title('k = ' + str(vec_idx-1))
     # ax.colorbar()
 
 plt.show()
-
-
 
 print('ya')
