@@ -52,10 +52,18 @@ y_nodes = mapped_nodes[permutation] + noise
 distance_mat = scipy.spatial.distance_matrix(y_nodes, y_nodes, p=2)
 sorted_distances = np.sort(distance_mat, 1)
 # ninth element for threshold
+# THRESHHOLD ALL 8
 threshold = np.min(sorted_distances[:,8])
 adj_mat = np.copy(distance_mat)
 adj_mat[adj_mat > threshold] = 0
 adj_mat[adj_mat != 0] = 1
+
+# THRESHOLD EACH 4
+# threshold_mat = np.repeat(np.expand_dims(sorted_distances[:,4], axis=0), nx*ny, axis=0)
+# adj_mat = np.copy(distance_mat)
+# adj_mat[adj_mat > threshold_mat] = 0
+# adj_mat[adj_mat != 0] = 1
+
 # adj_mat = np.exp(-adj_mat/threshold)
 # adj_mat[adj_mat == 1] = 0
 adj_mat = sparse.lil_matrix(adj_mat)
@@ -79,7 +87,7 @@ eigVecs = eigVecs[:,idx_pn]
 fig2 = plt.figure(1)
 plt.xlabel('Statistical order')
 plt.ylabel(r'$\lambda$')
-plt.title('Product graph computed eigenvalues (Sorted), with noise and permutation')
+plt.title('Noised permutated Product graph computed eigenvalues (Sorted),fixed threshold with maximum 8 neighbors')
 
 plt.plot(np.arange(len(eigVals))+1,eigVals)
 plt.show()
@@ -101,13 +109,13 @@ eig_vecs_idx = [1, 2, 5, 10]
 
 # Path graph
 fig4 = plt.figure(4)
-fig4.suptitle('Colored topology for Noised product Graph')
+fig4.suptitle('Colored topology for Noised product Graph, fixed threshold with maximum 8 neighbors')
 
 for idx, vec_idx in enumerate(eig_vecs_idx):
     ax = fig4.add_subplot(2, int(len(eig_vecs_idx)/2), idx+1, projection='3d')
     color = np.round(eigVecs[:, vec_idx-1], decimals=4)
     # ax.plot_wireframe(wireframex, wireframey, wireframez)
-    ax.scatter(mapped_nodes[:, 0], mapped_nodes[:, 1], mapped_nodes[:, 2], c=color, s=10)
+    ax.scatter(y_nodes[:, 0], y_nodes[:, 1], y_nodes[:, 2], c=color, s=10)
     plt.xlim(-150, 150)
     plt.ylim(-150, 150)
     ax.set_zlim(-150, 150)
