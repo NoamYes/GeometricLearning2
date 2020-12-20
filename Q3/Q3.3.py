@@ -16,18 +16,17 @@ vy = np.arange(ny)
 
 r = 30
 R = 100
-def torus_coords_from_pair(prod_vertex):
-    r = 30
-    R = 100
-    nx = 71
-    ny = 31
+def torus_coords_from_pair(prod_vertex, nx, ny, R, r):
+    # create a torus as product of ring graphs Rnx x Rny.
+    # R - Torus main radius.
+    # r - Torus secondary radius.
+
     x = prod_vertex[0]
     y = prod_vertex[1]
     phi = 2*np.pi*x/nx
     theta = 2*np.pi*y/ny
 
     r_coord = R-np.cos(theta)*r
-    phi_coord = phi
     z_coord = np.sin(theta)*r
 
     x = r_coord*np.cos(phi)
@@ -40,12 +39,12 @@ def torus_coords_from_pair(prod_vertex):
 g_nodes = np.zeros((nx*ny, 2))
 g_nodes[:,0] = np.repeat(vx, ny)
 g_nodes[:,1] = np.tile(vy, nx)
-x_nodes = np.array([torus_coords_from_pair(g_node) for g_node in g_nodes])
+mapped_nodes = np.array([torus_coords_from_pair(g_node, nx, ny, R, r) for g_node in g_nodes])
 
 permutation = np.random.permutation(range(nx*ny))
 noise = np.random.normal(loc=0, scale=0.01,  size=(nx*ny,3))
 
-y_nodes = x_nodes[permutation] + noise
+y_nodes = mapped_nodes[permutation] + noise
 
 
 # Compute affinity matrix
@@ -69,7 +68,7 @@ deg_mat = sparse.lil_matrix(np.diag(np.array(adj_mat.sum(axis=0)).flatten()))
 lap_mat = deg_mat - adj_mat
 
 # Compute eigenvalues and eigenvectors
-eigVals, eigVecs  = np.linalg.eigh(lap_mat.toarray())
+eigVals, eigVecs  = np.linalg.eig(lap_mat.toarray())
 
 # Sort the eigen values with associated eigenvectors
 idx_pn = eigVals.argsort()[::1] 
@@ -86,5 +85,35 @@ plt.plot(np.arange(len(eigVals))+1,eigVals)
 plt.show()
 
 
+# Plot the analytical eigenvalues
+fig3 = plt.figure(3)
+iv, jv = np.meshgrid(vx, vy, sparse=False, indexing='ij')
+eigenvals_analytic = 2*(1-np.cos(np.pi*iv/nx)) + 2*(1-np.cos(np.pi*jv/ny))
+ax = fig3.add_subplot(122)
+plt.xlabel('Statistical order')
+plt.ylabel(r'$\lambda$')
+ax.set_title('Product graph analytic eigenvalues')
+eigenvals_analytic = np.sort(eigenvals_analytic.flatten())
+plt.plot(np.arange(len(eigVals))+1, eigenvals_analytic)
+# plt.show()
+
+# Plot graph topology colored by eigenvectors
+eig_vecs_idx = [1, 2, 5, 10]
+
+# Path graph
+fig4 = plt.figure(4)
+fig4.suptitle('Colored topology for Path Graph')
+
+for idx, vec_idx in enumerate(eig_vecs_idx):
+    ax = fig4.add_subplot(2, int(len(eig_vecs_idx)/2), idx+1, projection='3d')
+    color = np.round(eigVecs[:, vec_idx-1], decimals=4)
+    # ax.plot_wireframe(wireframex, wireframey, wireframez)
+    ax.scatter(mapped_nodes[:, 0], mapped_nodes[:, 1], mapped_nodes[:, 2], c=color, s=10)
+    plt.xlim(-150, 150)
+    plt.ylim(-150, 150)
+    ax.set_zlim(-150, 150)
+    ax.set_title('k = ' + str(vec_idx-1))
+
+plt.show()
 
 print('ya')

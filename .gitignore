@@ -1,2 +1,4 @@
 .idea
 */__pycache__/
+compare
+.vscode/settings.json
