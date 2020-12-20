@@ -1,5 +1,5 @@
 import numpy as np
-from affinity_mat import AffinityMat
+from Q5_1 import AffinityMat
 
 
 def Diffusion_Maps(Z, kernel_method, epsilon, n_neighbor, d, t=100, **kwargs):

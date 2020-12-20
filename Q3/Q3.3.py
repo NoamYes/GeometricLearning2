@@ -88,11 +88,10 @@ plt.show()
 # Plot the analytical eigenvalues
 fig3 = plt.figure(3)
 iv, jv = np.meshgrid(vx, vy, sparse=False, indexing='ij')
-eigenvals_analytic = 2*(1-np.cos(np.pi*iv/nx)) + 2*(1-np.cos(np.pi*jv/ny))
-ax = fig3.add_subplot(122)
+eigenvals_analytic = 2*(1-np.cos(2*np.pi*iv/nx)) + 2*(1-np.cos(2*np.pi*jv/ny))
 plt.xlabel('Statistical order')
 plt.ylabel(r'$\lambda$')
-ax.set_title('Product graph analytic eigenvalues')
+plt.title('Product graph analytic eigenvalues')
 eigenvals_analytic = np.sort(eigenvals_analytic.flatten())
 plt.plot(np.arange(len(eigVals))+1, eigenvals_analytic)
 # plt.show()
@@ -102,7 +101,7 @@ eig_vecs_idx = [1, 2, 5, 10]
 
 # Path graph
 fig4 = plt.figure(4)
-fig4.suptitle('Colored topology for Path Graph')
+fig4.suptitle('Colored topology for Noised product Graph')
 
 for idx, vec_idx in enumerate(eig_vecs_idx):
     ax = fig4.add_subplot(2, int(len(eig_vecs_idx)/2), idx+1, projection='3d')

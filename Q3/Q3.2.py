@@ -2,6 +2,8 @@ import numpy as np
 import networkx as netx
 import matplotlib.pyplot as plt
 import scipy.sparse as sparse
+import scipy as scipy
+
 # from plot3dnetwork import plot_3d_network
 
 
@@ -78,10 +80,10 @@ g_deg_mat = sparse.lil_matrix(np.diag(np.array(g_adj_mat.sum(axis=0)).flatten())
 
 
 # Compute Laplacian matrix
-g_lap_mat = g_deg_mat - g_adj_mat
+g_lap_mat = g_deg_mat.toarray() - g_adj_mat.toarray()
 
 # Compute eigenvalues and eigenvectors
-g_eigVals, g_eigVecs = np.linalg.eig(g_lap_mat.toarray())
+g_eigVals, g_eigVecs = scipy.linalg.eigh(g_lap_mat)
 
 # Sort the eigen values with associated eigenvectors
 idx_pn = g_eigVals.argsort()[::1] 
@@ -100,7 +102,7 @@ plt.plot(np.arange(len(g_eigVals))+1, g_eigVals)
 
 # Plot the analytical eigenvalues
 iv, jv = np.meshgrid(vx, vy, sparse=False, indexing='ij')
-eigenvals_analytic = 2*(1-np.cos(np.pi*iv/nx)) + 2*(1-np.cos(np.pi*jv/ny))
+eigenvals_analytic = 2*(1-np.cos(2*np.pi*iv/nx)) + 2*(1-np.cos(2*np.pi*jv/ny))
 ax = fig2.add_subplot(122)
 plt.xlabel('Statistical order')
 plt.ylabel(r'$\lambda$')

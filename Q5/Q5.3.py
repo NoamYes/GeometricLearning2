@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn import datasets
-from manifold_reduction import Diffusion_Maps, Locally_Linear_Embedding
+from Q5_2 import Diffusion_Maps, Locally_Linear_Embedding
 
 n = 100
 m = 40
